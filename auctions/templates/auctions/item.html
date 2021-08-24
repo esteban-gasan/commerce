@@ -1,0 +1,17 @@
+{% extends 'auctions/layout.html' %}
+
+{% block title %}{{ item.name }} | Auctions{% endblock title %}
+
+{% block body %}
+
+<img src="{{ item.image_url }}" alt="item_image">
+
+<p>{{ item.name }}</p>
+<p>{{ item.description }}</p>
+<p>{{ item.starting_price }}</p>
+
+{% for category in categories %}
+<ul>{{ category }}</ul>
+{% endfor %}
+
+{% endblock body %}
