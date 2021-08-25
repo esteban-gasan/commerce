@@ -9,9 +9,11 @@
 <p>{{ item.name }}</p>
 <p>{{ item.description }}</p>
 <p>{{ item.starting_price }}</p>
+<p>{{ item.seller }}</p>
 
-{% for category in categories %}
+{{ item.categories }}
+{% comment %} {% for category in item.categories %}
 <ul>{{ category }}</ul>
-{% endfor %}
+{% endfor %} {% endcomment %}
 
 {% endblock body %}

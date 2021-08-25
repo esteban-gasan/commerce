@@ -1,6 +1,13 @@
 from django.contrib import admin
 
-from .models import Item
+from .models import Category, Item, User
 
-# Register your models here.
-admin.site.register(Item)
+
+class ItemAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "starting_price", "seller")
+    filter_horizontal = ("categories",)
+
+
+admin.site.register(User)
+admin.site.register(Category)
+admin.site.register(Item, ItemAdmin)
