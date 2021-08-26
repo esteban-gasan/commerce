@@ -7,7 +7,7 @@ class User(AbstractUser):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=64, unique=True)
 
     def __str__(self) -> str:
         return self.name
@@ -22,6 +22,7 @@ class Item(models.Model):
         User, on_delete=models.CASCADE, related_name="items_for_sale")
     categories = models.ManyToManyField(
         Category, blank=True, related_name="items")
+    date_listed = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
         return f"{self.id}: {self.name}"
