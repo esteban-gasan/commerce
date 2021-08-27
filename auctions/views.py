@@ -10,7 +10,8 @@ from .models import Category, Item, User
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    context = {"items": Item.objects.filter(active=True)}
+    return render(request, "auctions/index.html", context)
 
 
 def item_view(request, item_id):
