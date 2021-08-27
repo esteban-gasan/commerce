@@ -101,6 +101,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGIN_URL = 'auctions:login'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/

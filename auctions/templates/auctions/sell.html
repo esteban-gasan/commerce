@@ -1,0 +1,19 @@
+{% extends 'auctions/layout.html' %}
+
+{% block title %}List an item | Auctions{% endblock title %}
+
+{% block body %}
+
+<h2>List an item</h2>
+
+<form action="{% url 'auctions:sell' %}" method="post">
+    <div class="form-group">
+        {% csrf_token %}
+        {{ form }}
+        {% comment %} <input type="hidden" name="next" value="{{ next }}"> {% endcomment %}
+        <button class="btn btn-primary" type="submit">List Item</button>
+        <a class="btn btn-secondary" href="{% url 'auctions:index' %}">Cancel</a>
+    </div>
+</form>
+
+{% endblock body %}

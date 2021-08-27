@@ -1,9 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import Http404, HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.urls import reverse
 
+from .forms import ItemForm
 from .models import Item, User
 
 
@@ -22,6 +24,24 @@ def item_view(request, item_id):
         "bids": item.bids.all(),
         "comments": item.comments.all()
     })
+
+
+@login_required(redirect_field_name=None)
+def sell_view(request):
+    if request.method == "POST":
+        form = ItemForm(request.POST)
+        if not form.is_valid():
+            return render(request, "auctions/sell.html", {"form": form})
+
+        # Create object but don't save to the database yet
+        new_item = form.save(commit=False)
+        new_item.seller = request.user
+        new_item.save()     # Save the instance
+        form.save_m2m()     # Save the many to many data
+        return redirect("auctions:item", item_id=new_item.id)
+
+    # GET method
+    return render(request, "auctions/sell.html", {"form": ItemForm()})
 
 
 def login_view(request):
