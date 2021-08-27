@@ -23,6 +23,8 @@ class Item(models.Model):
     categories = models.ManyToManyField(
         Category, blank=True, related_name="items")
     date_listed = models.DateTimeField(auto_now_add=True)
+    date_closed = models.DateTimeField(blank=True, null=True)
+    active = models.BooleanField(default=True)
 
     def __str__(self) -> str:
         return f"{self.id}: {self.name}"

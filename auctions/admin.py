@@ -4,7 +4,8 @@ from .models import Category, Item, User
 
 
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "starting_price", "seller", "date_listed")
+    list_display = ("id", "active", "name", "starting_price",
+                    "seller", "date_listed", "date_closed")
     filter_horizontal = ("categories",)
 
 
