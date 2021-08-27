@@ -6,7 +6,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 
 from .forms import ItemForm
-from .models import Item, User
+from .models import Category, Item, User
 
 
 def index(request):
@@ -21,9 +21,24 @@ def item_view(request, item_id):
 
     return render(request, "auctions/item.html", {
         "item": item,
+        "categories": item.categories.all(),
         "bids": item.bids.all(),
         "comments": item.comments.all()
     })
+
+
+def all_categories(request):
+    return render(request, "auctions/all_categories.html", {
+        "categories": Category.objects.all()
+    })
+
+
+def category_view(request, category_id):
+    context = {
+        "category": Category.objects.get(pk=category_id),
+        "items": Item.objects.filter(categories=category_id, active=True)
+    }
+    return render(request, "auctions/category.html", context)
 
 
 @login_required(redirect_field_name=None)

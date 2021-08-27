@@ -11,9 +11,8 @@
 <p>{{ item.starting_price }}</p>
 <p>{{ item.seller }}</p>
 
-{{ item.categories }}
-{% comment %} {% for category in item.categories %}
+{% for category in categories %}
 <ul>{{ category }}</ul>
-{% endfor %} {% endcomment %}
+{% endfor %}
 
 {% endblock body %}

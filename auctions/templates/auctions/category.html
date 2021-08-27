@@ -1,0 +1,18 @@
+{% extends 'auctions/layout.html' %}
+
+{% block title %}
+{{ category.name | title }} for sale | Auctions
+{% endblock title %}
+
+{% block body %}
+
+<h2>{{ category.name | title }}</h2>
+{% for item in items %}
+<ul>
+    <a href="{% url 'auctions:item' item.id %}">{{ item.name }}</a>
+</ul>
+{% empty %}
+No active items for this category.
+{% endfor %}
+
+{% endblock body %}
