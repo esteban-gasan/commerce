@@ -4,12 +4,6 @@
 
 <h2>Active Listings</h2>
 
-{% for item in items %}
-<ul>
-    <a href="{% url 'auctions:item' item.id %}">{{ item.name }}</a>
-</ul>
-{% empty %}
-There are no active listings.
-{% endfor %}
+{% include 'auctions/listings.html' %}
 
 {% endblock %}

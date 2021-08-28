@@ -10,7 +10,10 @@ from .models import Category, Item, User
 
 
 def index(request):
-    context = {"items": Item.objects.filter(active=True)}
+    context = {
+        "items": Item.objects.filter(active=True),
+        "empty_msg": "There are no active listings."
+    }
     return render(request, "auctions/index.html", context)
 
 
@@ -37,7 +40,8 @@ def all_categories(request):
 def category_view(request, category_id):
     context = {
         "category": Category.objects.get(pk=category_id),
-        "items": Item.objects.filter(categories=category_id, active=True)
+        "items": Item.objects.filter(categories=category_id, active=True),
+        "empty_msg": "No active items for this category."
     }
     return render(request, "auctions/category.html", context)
 

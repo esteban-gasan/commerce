@@ -1,0 +1,7 @@
+{% for item in items %}
+<ul>
+    <a href="{% url 'auctions:item' item.id %}">{{ item.name }}</a>
+</ul>
+{% empty %}
+{{ empty_msg }}
+{% endfor %}
