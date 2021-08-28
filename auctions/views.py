@@ -5,7 +5,7 @@ from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
-from .forms import ItemForm
+from .forms import CommentForm, ItemForm
 from .models import Category, Item, User
 
 
@@ -23,12 +23,29 @@ def item_view(request, item_id):
     except Item.DoesNotExist:
         raise Http404("Item not found.")
 
-    return render(request, "auctions/item.html", {
+    context = {
         "item": item,
         "categories": item.categories.all(),
         "bids": item.bids.all(),
+        "comment_form": CommentForm(),
         "comments": item.comments.all()
-    })
+    }
+    if request.method == "POST":
+        # Check which form was submitted
+        if "post_comment" in request.POST:
+            comment_form = CommentForm(request.POST)
+            if comment_form.is_valid():
+                # Create object but don't save to the database yet
+                new_comment = comment_form.save(commit=False)
+                new_comment.author = request.user
+                new_comment.posted_on = item
+                new_comment.save()              # Save the instance
+                comment_form.save_m2m()         # Save the many to many data
+            else:
+                # Send back the form submitted if errors are found
+                context["comment_form"] = comment_form
+
+    return render(request, "auctions/item.html", context)
 
 
 def all_categories(request):

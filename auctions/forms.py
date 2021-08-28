@@ -1,8 +1,23 @@
 from django import forms
+from django.forms import widgets
 from django.forms.models import ModelForm
 from django.utils.translation import gettext_lazy as _
 
-from .models import Item
+from .models import Comment, Item
+
+form_control = {'class': 'form-control'}  # Bootstrap class
+
+
+class CommentForm(ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('text',)
+        labels = {
+            'text': False
+        }
+        widgets = {
+            'text': forms.Textarea(attrs=form_control | {'rows': 3})
+        }
 
 
 class ItemForm(ModelForm):
@@ -14,7 +29,6 @@ class ItemForm(ModelForm):
             'name': _('Item name'),
             'image_url': _('Image URL')
         }
-        form_control = {'class': 'form-control'}  # Bootstrap class
         widgets = {
             'name': forms.TextInput(attrs=form_control),
             'description': forms.Textarea(attrs=form_control),

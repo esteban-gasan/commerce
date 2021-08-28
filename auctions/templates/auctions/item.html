@@ -15,4 +15,21 @@
 <ul>{{ category }}</ul>
 {% endfor %}
 
+
+<h5>Comments</h5>
+
+<form action="{% url 'auctions:item' item.id %}" method="post">
+    {% csrf_token %}
+    {{ comment_form }}
+    <button class="btn btn-outline-primary" type="submit" name="post_comment">Post comment</button>
+</form>
+
+{% for comment in comments %}
+<ul>
+    {{ comment.author }}
+    {{ comment.date_posted }}
+    {{ comment.text }}
+</ul>
+{% endfor %}
+
 {% endblock body %}
