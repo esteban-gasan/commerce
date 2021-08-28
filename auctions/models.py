@@ -3,11 +3,15 @@ from django.db import models
 
 
 class User(AbstractUser):
-    pass
+    watchlist = models.ManyToManyField(
+        "Item", blank=True, related_name="saved_by")
 
 
 class Category(models.Model):
     name = models.CharField(max_length=64, unique=True)
+
+    class Meta:
+        verbose_name_plural = "categories"
 
     def __str__(self) -> str:
         return self.name

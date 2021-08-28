@@ -1,7 +1,8 @@
 from django.contrib import admin
 
 from .models import Category, Item, User
-
+class UserAdmin(admin.ModelAdmin):
+    filter_horizontal = ("watchlist",)
 
 class ItemAdmin(admin.ModelAdmin):
     list_display = ("id", "active", "name", "starting_price",
@@ -9,6 +10,6 @@ class ItemAdmin(admin.ModelAdmin):
     filter_horizontal = ("categories",)
 
 
-admin.site.register(User)
+admin.site.register(User, UserAdmin)
 admin.site.register(Category)
 admin.site.register(Item, ItemAdmin)

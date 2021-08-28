@@ -64,6 +64,15 @@ def sell_view(request):
     return render(request, "auctions/sell.html", {"form": ItemForm()})
 
 
+@login_required(redirect_field_name=None)
+def watchlist(request):
+    context = {
+        "items": request.user.watchlist.all(),
+        "empty_msg": "You haven't added items to your watchlist."
+    }
+    return render(request, "auctions/watchlist.html", context)
+
+
 def login_view(request):
     if request.method == "POST":
 
