@@ -19,7 +19,6 @@ def index(request):
 
 
 def item_view(request, item_id):
-    item = get_object_or_404(Item, id=item_id)
     context = {
         "item": item,
         "categories": item.categories.all(),
@@ -38,29 +37,31 @@ def item_view(request, item_id):
     # Check which form was submitted
     if "post-comment" in request.POST:
         comment_form = CommentForm(request.POST)
-        if comment_form.is_valid():
-            # Create object but don't save to the database yet
-            new_comment = comment_form.save(commit=False)
-            new_comment.author = request.user
-            new_comment.posted_on = item
-            new_comment.save()              # Save the instance
-            comment_form.save_m2m()         # Save the many to many data
-        else:
+        if not comment_form.is_valid():
             # Send back the form submitted if errors are found
             context["comment_form"] = comment_form
+            return render(request, "auctions/item.html", context)
+
+        # Create object but don't save to the database yet
+        new_comment = comment_form.save(commit=False)
+        new_comment.author = request.user
+        new_comment.posted_on = item
+        new_comment.save()              # Save the instance
 
     elif "place-bid" in request.POST:
         bid_form = BidForm(data=request.POST, item_id=item_id)
-        if bid_form.is_valid():
-            new_bid = bid_form.save(commit=False)
-            new_bid.bidder = request.user
-            new_bid.item = item
-            new_bid.save()
-        else:
+        if not bid_form.is_valid():
             # Send back the form submitted if errors are found
             context["bid_form"] = bid_form
+            return render(request, "auctions/item.html", context)
 
-    return render(request, "auctions/item.html", context)
+        new_bid = bid_form.save(commit=False)
+        new_bid.bidder = request.user
+        new_bid.item = item
+        new_bid.save()
+
+    # User will be redirect after successfully submitting a forms
+    return redirect("auctions:item", item_id=item_id)
 
 
 def all_categories(request):
