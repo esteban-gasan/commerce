@@ -1,11 +1,12 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-from django.http import Http404, HttpResponse, HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.db.models.aggregates import Max
+from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
-from .forms import CommentForm, ItemForm
+from .forms import BidForm, CommentForm, ItemForm
 from .models import Category, Item, User
 
 
@@ -18,32 +19,46 @@ def index(request):
 
 
 def item_view(request, item_id):
-    try:
-        item = Item.objects.get(id=item_id)
-    except Item.DoesNotExist:
-        raise Http404("Item not found.")
-
+    item = get_object_or_404(Item, id=item_id)
     context = {
         "item": item,
         "categories": item.categories.all(),
         "bids": item.bids.all(),
+        "comments": item.comments.all(),
+        "bid_form": BidForm(),
         "comment_form": CommentForm(),
-        "comments": item.comments.all()
     }
-    if request.method == "POST":
-        # Check which form was submitted
-        if "post_comment" in request.POST:
-            comment_form = CommentForm(request.POST)
-            if comment_form.is_valid():
-                # Create object but don't save to the database yet
-                new_comment = comment_form.save(commit=False)
-                new_comment.author = request.user
-                new_comment.posted_on = item
-                new_comment.save()              # Save the instance
-                comment_form.save_m2m()         # Save the many to many data
-            else:
-                # Send back the form submitted if errors are found
-                context["comment_form"] = comment_form
+
+    if request.method != "POST":
+        return render(request, "auctions/item.html", context)
+
+    if not request.user.is_authenticated:
+        return redirect("auctions:login")  # TODO: con next
+
+    # Check which form was submitted
+    if "post-comment" in request.POST:
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            # Create object but don't save to the database yet
+            new_comment = comment_form.save(commit=False)
+            new_comment.author = request.user
+            new_comment.posted_on = item
+            new_comment.save()              # Save the instance
+            comment_form.save_m2m()         # Save the many to many data
+        else:
+            # Send back the form submitted if errors are found
+            context["comment_form"] = comment_form
+
+    elif "place-bid" in request.POST:
+        bid_form = BidForm(data=request.POST, item_id=item_id)
+        if bid_form.is_valid():
+            new_bid = bid_form.save(commit=False)
+            new_bid.bidder = request.user
+            new_bid.item = item
+            new_bid.save()
+        else:
+            # Send back the form submitted if errors are found
+            context["bid_form"] = bid_form
 
     return render(request, "auctions/item.html", context)
 

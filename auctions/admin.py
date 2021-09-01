@@ -1,10 +1,14 @@
 from django.contrib import admin
 
-from .models import Category, Comment, Item, User
+from .models import Bid, Category, Comment, Item, User
 
 
 class UserAdmin(admin.ModelAdmin):
     filter_horizontal = ("watchlist",)
+
+
+class BidAdmin(admin.ModelAdmin):
+    list_display = ("id", "bidder", "bid_amount", "bid_time", "item")
 
 
 class CommentAdmin(admin.ModelAdmin):
@@ -18,6 +22,7 @@ class ItemAdmin(admin.ModelAdmin):
 
 
 admin.site.register(User, UserAdmin)
+admin.site.register(Bid, BidAdmin)
 admin.site.register(Category)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Item, ItemAdmin)
