@@ -25,13 +25,17 @@ class BidForm(ModelForm):
     def clean_bid_amount(self):
         bid_amount = self.cleaned_data['bid_amount']
         item = get_object_or_404(Item, id=self.item_id)
-        highest_bid = item.bids.aggregate(Max("bid_amount"))
-        highest_bid = highest_bid['bid_amount__max']
-        # Compare against the starting price if there are no bids
-        if bid_amount <= max(highest_bid, item.starting_price):
-            return ValidationError(
-                _("Your bid must be higher than the current item's price"),
-                code='low_bid'
+        highest_bid = item.bids.order_by('-bid_amount').first()
+        # Checking if there are bids for the item
+        if highest_bid is not None:
+            #  Comparing against the current highest bid
+            if bid_amount <= highest_bid.bid_amount:
+                raise ValidationError(
+                    _("Your bid must be higher than the current item's price")
+                )
+        elif bid_amount < item.starting_price:
+            raise ValidationError(
+                _("Your bid must be at least as large as the item's starting price")
             )
         return bid_amount
 

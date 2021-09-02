@@ -11,6 +11,10 @@ from .models import Category, Item, User
 
 
 def index(request):
+    i = Item.objects.filter(active=True).annotate(
+        highest_bid=Max("bids__bid_amount"))
+    a = i[0].highest_bid
+    b = i[1].highest_bid
     context = {
         "items": Item.objects.filter(active=True),
         "empty_msg": "There are no active listings."
@@ -19,10 +23,13 @@ def index(request):
 
 
 def item_view(request, item_id):
+    item = get_object_or_404(Item, id=item_id)
     context = {
         "item": item,
         "categories": item.categories.all(),
         "bids": item.bids.all(),
+        "bids_count": item.bids.count(),
+        "highest_bid": item.bids.order_by("-bid_amount").first(),
         "comments": item.comments.all(),
         "bid_form": BidForm(),
         "comment_form": CommentForm(),
@@ -60,7 +67,7 @@ def item_view(request, item_id):
         new_bid.item = item
         new_bid.save()
 
-    # User will be redirect after successfully submitting a forms
+    # User will be redirect after successfully submitting a form
     return redirect("auctions:item", item_id=item_id)
 
 
