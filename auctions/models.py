@@ -11,6 +11,7 @@ class Category(models.Model):
     name = models.CharField(max_length=64, unique=True)
 
     class Meta:
+        ordering = ["name"]
         verbose_name_plural = "categories"
 
     def __str__(self) -> str:
@@ -29,6 +30,9 @@ class Item(models.Model):
     date_listed = models.DateTimeField(auto_now_add=True)
     date_closed = models.DateTimeField(blank=True, null=True)
     active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["-date_listed"]
 
     def __str__(self) -> str:
         return f"{self.id}: {self.name}"
@@ -50,3 +54,6 @@ class Comment(models.Model):
         Item, on_delete=models.CASCADE, related_name="comments")
     text = models.TextField()
     date_posted = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-date_posted"]

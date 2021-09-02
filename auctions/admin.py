@@ -16,8 +16,9 @@ class CommentAdmin(admin.ModelAdmin):
 
 
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ("id", "active", "name", "starting_price",
+    list_display = ("id", "name", "active", "starting_price",
                     "seller", "date_listed", "date_closed")
+    list_display_links = ("id", "name")
     filter_horizontal = ("categories",)
 
 
