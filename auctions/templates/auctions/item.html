@@ -9,20 +9,20 @@
 <p>{{ item.description }}</p>
 
 {% if highest_bid %}
-<p>Current price: {{ highest_bid.bid_amount }}</p>
+    <p>Current price: {{ highest_bid.bid_amount }}</p>
 {% else %}
-<p>Starting price: {{ item.starting_price }}</p>
+    <p>Starting price: {{ item.starting_price }}</p>
 {% endif %}
 
 <p>{{ item.seller }}</p>
 
 {% for category in categories %}
-<ul>{{ category }}</ul>
+    <ul>{{ category }}</ul>
 {% endfor %}
 
 <p>{{ bids_count }} bid{{ bids_count|pluralize }} so far.</p>
-{% if highest_bid.bidder == request.user %}
-<p>Your bid is the current bid.</p>
+{% if highest_bid.bidder == user %}
+    <p>Your bid is the current bid.</p>
 {% endif %}
 <form action="{% url 'auctions:item' item.id %}" method="post">
     {% csrf_token %}
