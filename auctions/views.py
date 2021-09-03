@@ -27,6 +27,7 @@ def item_view(request, item_id):
     context = {
         "item": item,
         "categories": item.categories.all(),
+        "saved_by": item.saved_by.all(),
         "bids": item.bids.all(),
         "bids_count": item.bids.count(),
         "highest_bid": item.bids.order_by("-bid_amount").first(),
@@ -40,6 +41,10 @@ def item_view(request, item_id):
 
     if not request.user.is_authenticated:
         return redirect("auctions:login")  # TODO: con next
+
+    if not item.active:
+        # If a user somehow tries to submit a form on an inactive/closed item
+        return redirect("auctions:item", item_id=item_id)
 
     # Check which form was submitted
     if "post-comment" in request.POST:
@@ -66,6 +71,12 @@ def item_view(request, item_id):
         new_bid.bidder = request.user
         new_bid.item = item
         new_bid.save()
+
+    elif "add-watchlist" in request.POST:
+        request.user.watchlist.add(item)
+
+    elif "rm-watchlist" in request.POST:
+        request.user.watchlist.remove(item)
 
     # User will be redirect after successfully submitting a form
     return redirect("auctions:item", item_id=item_id)

@@ -4,12 +4,27 @@
 
 {% block body %}
 
+{% if user.is_authenticated  %}
+    <form action="{% url 'auctions:item' item.id %}" method="post">
+        {% csrf_token %}
+        {% if user not in saved_by %}
+            <button class="btn btn-info btn-sm" type="submit" name="add-watchlist">
+                Add to Watchlist
+            </button>
+        {% else %}
+            <button class="btn btn-outline-danger btn-sm" type="submit" name="rm-watchlist">
+                Remove from Watchlist
+            </button>
+        {% endif %}
+    </form>
+{% endif %}
+
 <img src="{{ item.image_url }}" alt="item_image">
 <p>{{ item.name }}</p>
 <p>{{ item.description }}</p>
 
 {% if highest_bid %}
-    <p>Current price: {{ highest_bid.bid_amount }}</p>
+    <p>Current bid: {{ highest_bid.bid_amount }}</p>
 {% else %}
     <p>Starting price: {{ item.starting_price }}</p>
 {% endif %}
@@ -34,7 +49,7 @@
 <form action="{% url 'auctions:item' item.id %}" method="post">
     {% csrf_token %}
     {{ comment_form }}
-    <button class="btn btn-outline-primary" type="submit" name="post-comment">Post comment</button>
+    <button class="btn btn-secondary" type="submit" name="post-comment">Post comment</button>
 </form>
 
 {% for comment in comments %}
