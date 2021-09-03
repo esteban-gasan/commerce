@@ -2,9 +2,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.db.models.aggregates import Max
-from django.http import Http404, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.utils import timezone
 
 from .forms import BidForm, CommentForm, ItemForm
 from .models import Category, Item, User
@@ -24,13 +25,14 @@ def index(request):
 
 def item_view(request, item_id):
     item = get_object_or_404(Item, id=item_id)
+    highest_bid = item.bids.order_by("-bid_amount").first()
     context = {
         "item": item,
         "categories": item.categories.all(),
         "saved_by": item.saved_by.all(),
         "bids": item.bids.all(),
         "bids_count": item.bids.count(),
-        "highest_bid": item.bids.order_by("-bid_amount").first(),
+        "highest_bid": highest_bid,
         "comments": item.comments.all(),
         "bid_form": BidForm(),
         "comment_form": CommentForm(),
@@ -77,6 +79,14 @@ def item_view(request, item_id):
 
     elif "rm-watchlist" in request.POST:
         request.user.watchlist.remove(item)
+
+    elif "end-listing" in request.POST:
+        item.active = False
+        item.date_closed = timezone.now()
+        if highest_bid:
+            item.winner = highest_bid.bidder
+            item.winning_bid_amount = highest_bid.bid_amount
+        item.save()
 
     # User will be redirect after successfully submitting a form
     return redirect("auctions:item", item_id=item_id)

@@ -23,27 +23,50 @@
 <p>{{ item.name }}</p>
 <p>{{ item.description }}</p>
 
-{% if highest_bid %}
-    <p>Current bid: {{ highest_bid.bid_amount }}</p>
-{% else %}
-    <p>Starting price: {{ item.starting_price }}</p>
-{% endif %}
-
 <p>{{ item.seller }}</p>
 
 {% for category in categories %}
     <ul>{{ category }}</ul>
 {% endfor %}
 
-<p>{{ bids_count }} bid{{ bids_count|pluralize }} so far.</p>
-{% if highest_bid.bidder == user %}
-    <p>Your bid is the current bid.</p>
+{% if item.active %}
+    {% if highest_bid %}
+        <p>Current bid: {{ highest_bid.bid_amount }}</p>
+    {% else %}
+        <p>Starting price: {{ item.starting_price }}</p>
+    {% endif %}
+
+    <p>{{ bids_count }} bid{{ bids_count|pluralize }} so far.</p>
+
+    {% if highest_bid.bidder == user %}
+        <p>Your bid is the current bid.</p>
+    {% endif %}
+
+    <form action="{% url 'auctions:item' item.id %}" method="post">
+        {% csrf_token %}
+        {% if item.seller == user %}
+            <button class="btn btn-danger" type="submit" name="end-listing">End listing</button>
+        {% else %}
+            {{ bid_form }}
+            <button class="btn btn-primary" type="submit" name="place-bid">Place bid</button>
+        {% endif %}
+    </form>
+
+{% else %}
+    {% if item.winner == user %}
+        <div class="alert alert-success" role="alert">
+            Congratulations! You won this item.
+        </div>
+    {% else %}
+    <div class="alert alert-warning" role="alert">
+        Bidding has ended on this item.
+    </div>
+    {% endif %}
+
+    {% if item.winning_bid_amount %}
+        <p>Winning bid: {{ item.winning_bid_amount }}</p>
+    {% endif %}
 {% endif %}
-<form action="{% url 'auctions:item' item.id %}" method="post">
-    {% csrf_token %}
-    {{ bid_form }}
-    <button class="btn btn-primary" type="submit" name="place-bid">Place bid</button>
-</form>
 
 <h5>Comments</h5>
 <form action="{% url 'auctions:item' item.id %}" method="post">
