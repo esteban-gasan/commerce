@@ -29,6 +29,10 @@ class Item(models.Model):
         Category, blank=True, related_name="items")
     date_listed = models.DateTimeField(auto_now_add=True)
     date_closed = models.DateTimeField(blank=True, null=True)
+    winner = models.ForeignKey(
+        User, on_delete=models.SET_NULL, blank=True, null=True, related_name="won_items")
+    winning_bid_amount = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, null=True)
     active = models.BooleanField(default=True)
 
     class Meta:
