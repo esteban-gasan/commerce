@@ -10,7 +10,6 @@
     <div class="form-group">
         {% csrf_token %}
         {{ form }}
-        {% comment %} <input type="hidden" name="next" value="{{ next }}"> {% endcomment %}
         <button class="btn btn-primary" type="submit">List Item</button>
         <a class="btn btn-secondary" href="{% url 'auctions:index' %}">Cancel</a>
     </div>

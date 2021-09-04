@@ -47,7 +47,12 @@
         {% if item.seller == user %}
             <button class="btn btn-danger" type="submit" name="end-listing">End listing</button>
         {% else %}
-            {{ bid_form }}
+            {% if bid_form.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ bid_form.bid_amount.errors }}
+                </div>
+            {% endif %}
+            {{ bid_form.bid_amount }}
             <button class="btn btn-primary" type="submit" name="place-bid">Place bid</button>
         {% endif %}
     </form>

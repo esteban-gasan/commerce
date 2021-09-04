@@ -12,12 +12,9 @@ from .models import Category, Item, User
 
 
 def index(request):
-    i = Item.objects.filter(active=True).annotate(
-        highest_bid=Max("bids__bid_amount"))
-    a = i[0].highest_bid
-    b = i[1].highest_bid
     context = {
-        "items": Item.objects.filter(active=True),
+        "items": Item.objects.filter(active=True).annotate(
+            highest_bid=Max("bids__bid_amount")).order_by("-date_listed"),
         "empty_msg": "There are no active listings."
     }
     return render(request, "auctions/index.html", context)
@@ -42,7 +39,7 @@ def item_view(request, item_id):
         return render(request, "auctions/item.html", context)
 
     if not request.user.is_authenticated:
-        return redirect("auctions:login")  # TODO: con next
+        return redirect(f"{reverse('auctions:login')}?next={request.path}")
 
     if not item.active:
         # If a user somehow tries to submit a form on an inactive/closed item
@@ -107,7 +104,7 @@ def category_view(request, category_id):
     return render(request, "auctions/category.html", context)
 
 
-@login_required(redirect_field_name=None)
+@login_required()
 def sell_view(request):
     if request.method == "POST":
         form = ItemForm(request.POST)
@@ -125,7 +122,7 @@ def sell_view(request):
     return render(request, "auctions/sell.html", {"form": ItemForm()})
 
 
-@login_required(redirect_field_name=None)
+@login_required()
 def watchlist(request):
     context = {
         "items": request.user.watchlist.all(),
@@ -135,6 +132,9 @@ def watchlist(request):
 
 
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect("auctions:index")
+
     if request.method == "POST":
 
         # Attempt to sign user in
@@ -145,6 +145,8 @@ def login_view(request):
         # Check if authentication successful
         if user is not None:
             login(request, user)
+            if (next_path := request.POST["next"]):
+                return redirect(next_path)
             return HttpResponseRedirect(reverse("auctions:index"))
         else:
             return render(request, "auctions/login.html", {
@@ -160,6 +162,9 @@ def logout_view(request):
 
 
 def register(request):
+    if request.user.is_authenticated:
+        return redirect("auctions:index")
+
     if request.method == "POST":
         username = request.POST["username"]
         email = request.POST["email"]
