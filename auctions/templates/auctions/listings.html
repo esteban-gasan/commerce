@@ -1,7 +1,18 @@
-{% for item in items %}
-<ul>
-    <a href="{% url 'auctions:item' item.id %}">{{ item.name }}</a>
-</ul>
-{% empty %}
-{{ empty_msg }}
-{% endfor %}
+<div class="row row-cols-1 row-cols-md-4 g-4">
+    {% for item in items %}
+        <div class="col">
+            <div class="card h-100">
+                <img src="{% if item.image_url %}{{ item.image_url }}{% else %}https://st4.depositphotos.com/14953852/24787/v/600/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg{% endif %}"
+                    class="card-img-top">
+                <div class="card-body">
+                    <h6 class="card-title">{{ item.name }}</h6>
+                    <p class="card-text fw-bold" id="price-text">${{ item.current_price }}</p>
+                    <p class="card-text">{{ item.description }}</p>
+                </div>
+                <a class="stretched-link" href="{% url 'auctions:item' item.id %}"></a>
+            </div>
+        </div>
+    {% empty %}
+        {{ empty_msg }}
+    {% endfor %}
+</div>

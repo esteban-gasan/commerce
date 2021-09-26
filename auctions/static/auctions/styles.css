@@ -1,3 +1,20 @@
 body {
     padding: 10px;
 }
+
+h2 {
+    margin-bottom: 25px;
+    margin-left: 2px;
+}
+
+.container {
+    margin-top: 15px;
+}
+
+.card-text {
+    font-size: 14px;
+}
+
+#price-text {
+    font-size: 16px;
+}
