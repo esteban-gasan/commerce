@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.db.models.aggregates import Max
+from django.db.models.functions import Coalesce
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -13,8 +14,11 @@ from .models import Category, Item, User
 
 def index(request):
     context = {
+        # Annotate the current price for each active listing, which will be either
+        # the highest bid or the starting price (if the first one is null).
+        # The results are then ordered by their date listed
         "items": Item.objects.filter(active=True).annotate(
-            highest_bid=Max("bids__bid_amount")).order_by("-date_listed"),
+            current_price=Coalesce(Max("bids__bid_amount"), "starting_price")).order_by("-date_listed"),
         "empty_msg": "There are no active listings."
     }
     return render(request, "auctions/index.html", context)
@@ -98,7 +102,8 @@ def all_categories(request):
 def category_view(request, category_id):
     context = {
         "category": Category.objects.get(pk=category_id),
-        "items": Item.objects.filter(categories=category_id, active=True),
+        "items": Item.objects.filter(categories=category_id, active=True).annotate(
+            current_price=Coalesce(Max("bids__bid_amount"), "starting_price")).order_by("-date_listed"),
         "empty_msg": "No active items for this category."
     }
     return render(request, "auctions/category.html", context)
@@ -125,7 +130,8 @@ def sell_view(request):
 @login_required()
 def watchlist(request):
     context = {
-        "items": request.user.watchlist.all(),
+        "items": request.user.watchlist.annotate(
+            current_price=Coalesce(Max("bids__bid_amount"), "starting_price")).order_by("-date_listed"),
         "empty_msg": "You haven't added items to your watchlist."
     }
     return render(request, "auctions/watchlist.html", context)
