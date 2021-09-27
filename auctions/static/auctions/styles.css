@@ -7,12 +7,33 @@ h2 {
     margin-left: 2px;
 }
 
+th {
+    width: 20%;
+    text-align: end;
+}
+
+td {
+    vertical-align: middle;
+}
+
+td>a {
+    text-decoration: none;
+}
+
+td>a:hover {
+    text-decoration: underline;
+}
+
 .container {
     margin-top: 15px;
 }
 
 .card-text {
     font-size: 14px;
+}
+
+.item-img {
+    width: 25rem;
 }
 
 #price-text {
