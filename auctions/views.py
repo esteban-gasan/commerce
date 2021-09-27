@@ -27,8 +27,10 @@ def index(request):
 def item_view(request, item_id):
     item = get_object_or_404(Item, id=item_id)
     highest_bid = item.bids.order_by("-bid_amount").first()
+    current_price = highest_bid.bid_amount if highest_bid else item.starting_price
     context = {
         "item": item,
+        "current_price": current_price,
         "categories": item.categories.all(),
         "saved_by": item.saved_by.all(),
         "bids": item.bids.all(),
