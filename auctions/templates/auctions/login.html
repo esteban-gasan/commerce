@@ -2,24 +2,28 @@
 
 {% block body %}
 
-<h2>Login</h2>
+<div class="row justify-content-center">
+    <div class="col-4">
+        <h2>Login</h2>
 
-{% if message %}
-    <div>{{ message }}</div>
-{% endif %}
+        {% if message %}
+            <div>{{ message }}</div>
+        {% endif %}
 
-<form action="{% url 'auctions:login' %}" method="post">
-    {% csrf_token %}
-    <div class="form-group">
-        <input autofocus class="form-control" type="text" name="username" placeholder="Username" required>
+        <form action="{% url 'auctions:login' %}" method="post">
+            {% csrf_token %}
+            <div class="form-group mb-3">
+                <input autofocus class="form-control" type="text" name="username" placeholder="Username" required>
+            </div>
+            <div class="form-group mb-3">
+                <input class="form-control" type="password" name="password" placeholder="Password" required>
+            </div>
+            <input class="btn btn-primary mb-3 w-100" type="submit" value="Login">
+            <input type="hidden" name="next" value="{{ request.GET.next }}">
+        </form>
+
+        Don't have an account? <a href="{% url 'auctions:register' %}">Register here.</a>
     </div>
-    <div class="form-group">
-        <input class="form-control" type="password" name="password" placeholder="Password" required>
-    </div>
-    <input class="btn btn-primary" type="submit" value="Login">
-    <input type="hidden" name="next" value="{{ request.GET.next }}">
-</form>
-
-Don't have an account? <a href="{% url 'auctions:register' %}">Register here.</a>
+</div>
 
 {% endblock %}
