@@ -31,11 +31,11 @@ class BidForm(ModelForm):
             #  Comparing against the current highest bid
             if bid_amount <= highest_bid.bid_amount:
                 raise ValidationError(
-                    _("Your bid must be higher than the current item's price")
+                    _("Your bid must be higher than the current item's price.")
                 )
         elif bid_amount < item.starting_price:
             raise ValidationError(
-                _("Your bid must be at least as large as the item's starting price")
+                _("Your bid must be at least as large as the item's starting price.")
             )
         return bid_amount
 
@@ -45,7 +45,8 @@ class CommentForm(ModelForm):
         model = Comment
         fields = ('text',)
         labels = {'text': False}
-        widgets = {'text': forms.Textarea(attrs=form_control | {'rows': 3})}
+        widgets = {'text': forms.Textarea(
+            attrs=form_control | {'rows': 3, 'placeholder': 'Write your comment here...'})}
 
 
 class ItemForm(ModelForm):
@@ -59,7 +60,6 @@ class ItemForm(ModelForm):
         }
         widgets = {
             'name': forms.TextInput(attrs=form_control),
-            'description': forms.Textarea(attrs=form_control),
             'starting_price': forms.NumberInput(attrs=form_control),
             'image_url': forms.URLInput(attrs=form_control),
             'categories': forms.CheckboxSelectMultiple
