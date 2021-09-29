@@ -56,6 +56,7 @@ class ItemForm(ModelForm):
                   'image_url', 'categories')
         labels = {
             'name': _('Item name'),
+            'starting_price': _('Starting bid'),
             'image_url': _('Image URL')
         }
         widgets = {
