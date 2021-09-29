@@ -7,6 +7,11 @@ h2 {
     margin-left: 2px;
 }
 
+label {
+    margin-top: 5px;
+    margin-bottom: 2px;
+}
+
 th {
     width: 15%;
     text-align: end;
@@ -22,6 +27,10 @@ td>a {
 
 td>a:hover {
     text-decoration: underline;
+}
+
+.sell-form>ul {
+    list-style-type: none;
 }
 
 .container {

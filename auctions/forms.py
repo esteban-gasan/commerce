@@ -60,6 +60,7 @@ class ItemForm(ModelForm):
         }
         widgets = {
             'name': forms.TextInput(attrs=form_control),
+            'description': forms.Textarea(attrs=form_control | {'rows': 7}),
             'starting_price': forms.NumberInput(attrs=form_control),
             'image_url': forms.URLInput(attrs=form_control),
             'categories': forms.CheckboxSelectMultiple

@@ -4,15 +4,21 @@
 
 {% block body %}
 
-<h2>List an item</h2>
+<div class="row justify-content-center">
+    <div class="col-8">
+        <h2>List an item</h2>
 
-<form action="{% url 'auctions:sell' %}" method="post">
-    <div class="form-group">
-        {% csrf_token %}
-        {{ form }}
-        <button class="btn btn-primary" type="submit">List Item</button>
-        <a class="btn btn-secondary" href="{% url 'auctions:index' %}">Cancel</a>
+        <form action="{% url 'auctions:sell' %}" method="post">
+            <div class="sell-form form-group">
+                {% csrf_token %}
+                {{ form }}
+                <div class="d-flex flex-row-reverse">
+                    <button class="btn btn-primary col-3 ms-2" type="submit">List Item</button>
+                    <a class="btn btn-outline-secondary" href="{% url 'auctions:index' %}">Cancel</a>
+                </div>
+            </div>
+        </form>
     </div>
-</form>
+</div>
 
 {% endblock body %}
