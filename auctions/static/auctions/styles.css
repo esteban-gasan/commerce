@@ -42,7 +42,13 @@ td>a:hover {
 }
 
 .item-img {
-    width: 25rem;
+    height: 25rem;
+}
+
+.card-img-top {
+    width: 100%;
+    height: 20vw;
+    object-fit: contain;
 }
 
 .comments-section>textarea {
