@@ -31,11 +31,11 @@ class BidForm(ModelForm):
             #  Comparing against the current highest bid
             if bid_amount <= highest_bid.bid_amount:
                 raise ValidationError(
-                    _("Your bid must be higher than the current item's price.")
+                    _("Your bid must be higher than the item's current bid.")
                 )
         elif bid_amount < item.starting_price:
             raise ValidationError(
-                _("Your bid must be at least as large as the item's starting price.")
+                _("Your bid must be at least as large as the item's starting bid.")
             )
         return bid_amount
 
