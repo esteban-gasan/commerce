@@ -162,7 +162,7 @@
 
 <section class="comments-section row justify-content-center">
   <div class="col">
-    <h5 class="mt-5 mb-3">Comments</h5>
+    <h5 class="mt-5 mb-3 ms-1">Comments</h5>
     <form class="" action="{% url 'auctions:item' item.id %}" method="post">
       {% csrf_token %}
       {{ comment_form }}
