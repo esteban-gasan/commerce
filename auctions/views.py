@@ -47,6 +47,12 @@ def item_view(request, item_id):
     if not request.user.is_authenticated:
         return redirect(f"{reverse('auctions:login')}?next={request.path}")
 
+    if "add-watchlist" in request.POST:
+        request.user.watchlist.add(item)
+
+    elif "rm-watchlist" in request.POST:
+        request.user.watchlist.remove(item)
+
     if not item.active:
         # If a user somehow tries to submit a form on an inactive/closed item
         return redirect("auctions:item", item_id=item_id)
@@ -76,12 +82,6 @@ def item_view(request, item_id):
         new_bid.bidder = request.user
         new_bid.item = item
         new_bid.save()
-
-    elif "add-watchlist" in request.POST:
-        request.user.watchlist.add(item)
-
-    elif "rm-watchlist" in request.POST:
-        request.user.watchlist.remove(item)
 
     elif "end-listing" in request.POST:
         item.active = False
